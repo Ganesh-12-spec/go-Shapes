@@ -47,6 +47,23 @@ func (r Rectangle) Area() float64{
 func (r Rectangle) Perimeter() float64 {
 	return 2 * (r.length + r.width)
 }
+func TotalArea(shapes []Shape) float64{
+	count := 0.0
+	for _, shape := range shapes{
+		count += shape.Area()
+	}
+	return count
+}
+func LargestArea(shapes []Shape) Shape{
+    largest := shapes[0]
+		for _, shape := range shapes{
+			if shape.Area() > largest.Area(){
+				largest = shape
+			}
+		}
+		return largest
+
+}
 
 func main(){
     c := Circle{radius: 5}
@@ -61,4 +78,9 @@ func main(){
 			fmt.Println("Area:", shape.Area())
 			fmt.Println("Perimeter:", shape.Perimeter())
 		}
+		total := TotalArea(shapes)
+		fmt.Println("Total:", total)
+
+		largest := LargestArea(shapes)
+    fmt.Println("Largest shape area:", largest.Area())
 }
