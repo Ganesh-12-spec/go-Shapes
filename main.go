@@ -9,9 +9,33 @@ type Shape interface {
 	Area() float64
 	Perimeter() float64
 }
+type Solid interface {
+	Volume() float64
+}
+
+type Sphere struct{
+	radius float64
+}
 
 type Circle struct{
 	radius float64
+}
+type Cylinder struct {
+	radius float64
+	height float64
+}
+
+func (cy Cylinder) Volume() float64 {
+	return math.Pi * cy.radius * cy.radius * cy.height
+}
+
+type Cone struct {
+	radius float64
+	height float64
+}
+
+func (co Cone) Volume() float64 {
+	return (1.0 / 3.0) * math.Pi * co.radius * co.radius * co.height
 }
 type Rectangle struct{
 	width  float64
@@ -46,6 +70,10 @@ func (r Rectangle) Area() float64{
 
 func (r Rectangle) Perimeter() float64 {
 	return 2 * (r.length + r.width)
+}
+
+func (s Sphere) Volume() float64{
+	return (4.0/3.0)* math.Pi * s.radius *  s.radius * s.radius
 }
 func TotalArea(shapes []Shape) float64{
 	count := 0.0
@@ -83,4 +111,13 @@ func main(){
 
 		largest := LargestArea(shapes)
     fmt.Println("Largest shape area:", largest.Area())
+
+		sph := Sphere{radius: 3}
+    fmt.Println("Sphere Volume:", sph.Volume())
+
+		cyl := Cylinder{radius: 3, height: 5}
+    cone := Cone{radius: 3, height: 5}
+
+    fmt.Println("Cylinder Volume:", cyl.Volume())
+    fmt.Println("Cone Volume:", cone.Volume())
 }
