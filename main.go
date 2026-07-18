@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
+	"net/http"
 )
 
 type Shape interface {
@@ -11,6 +13,26 @@ type Shape interface {
 }
 type Solid interface {
 	Volume() float64
+}
+type ShapeRequest struct{
+	Type string `json:"type"`
+	Radius float64 `json:"radius"`
+	Width float64  `json:"width"`
+	Length float64 `json:"length"`
+	Base   float64 `json:"base"`
+	Height float64 `json:"height"`
+	Side1  float64 `json:"side1"`
+	Side2  float64 `json:"side2"`
+	Side3  float64 `json:"side3"`
+
+}
+
+
+
+
+type ShapeResponse struct {
+	Area      float64 `json:"area"`
+	Perimeter float64 `json:"perimeter"`
 }
 
 type Sphere struct{
@@ -120,4 +142,29 @@ func main(){
 
     fmt.Println("Cylinder Volume:", cyl.Volume())
     fmt.Println("Cone Volume:", cone.Volume())
+
+		http.HandleFunc("/calculate", func(w http.ResponseWriter, r *http.Request) {
+			var req ShapeRequest
+			json.NewDecoder(r.Body).Decode(&req)
+
+			var shape Shape 
+
+			if req.Type == "circle"{
+				shape = Circle{radius: req.Radius}
+			}else if req.Type == "rectangle"{
+				shape = Rectangle{width: req.Width , length: req.Length}
+			}else if req.Type == "triangle"{
+				shape = Triangle{height: req.Height,base: req.Base,side1: req.Side1,side2:req.Side2, side3: req.Side3}
+			}else{
+				fmt.Print("not valid")
+			}
+
+			response := ShapeResponse{
+				Area:     shape.Area(),
+				Perimeter: shape.Perimeter(),
+			}
+			json.NewEncoder(w).Encode(response)
+		})
+
+		http.ListenAndServe(":8080",nil)
 }
